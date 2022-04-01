@@ -1,37 +1,29 @@
 sudo: required
 services:
   - docker
-
+env:
+  global:
+    - SHA=$(git rev-parse HEAD)
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
 before_install:
+  - openssl aes-256-cbc -K $encrypted_9f3b5599b056_key -iv $encrypted_9f3b5599b056_iv -in service-account.json.enc -out service-account.json -d
+  - curl https://sdk.cloud.google.com | bash > /dev/null;
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  - gcloud components update kubectl
+  - gcloud auth activate-service-account --key-file service-account.json
+  - gcloud config set project civil-vision-345616
+  - gcloud config set compute/zone us-central1-c
+  - gcloud container clusters get-credentials multi-cluster
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker build -t gweinheimer/react-test -f ./client/Dockerfile.dev ./client
-
 script:
-  - docker run -e CI=true gweinheimer/react-test npm test
-
-after_success:
-  - docker build -t gweinheimer/multi-client ./client
-  - docker build -t gweinheimer/multi-nginx ./nginx
-  - docker build -t gweinheimer/multi-server ./server
-  - docker build -t gweinheimer/multi-worker ./worker
-# login to docker
-# push images to dockerhub
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-  - docker push gweinheimer/multi-client  
-  - docker push gweinheimer/multi-nginx  
-  - docker push gweinheimer/multi-server  
-  - docker push gweinheimer/multi-worker  
-# deploy to AWS
+  - docker run -e CI=true gweinheimer/react-test npm test -- --coverage
 deploy:
-  provider: elastickbeanstalk
-  region: "us-east-1"
-  app: "multi-docker"
-  env: "Multidocker-env"
-  bucket_name: "elasticbeanstalk-us-east-1-783616990833"
-  bucket_path: "multi-docker"
+  provider: script
+  script: bash ./deploy.sh
   on:
-    branch: main
-  access_key_id: $AWS_ACCESS_KEY
-  secret_access_key: $AWS_SECRET_KEY
+    branch: master
+
 
 
 
