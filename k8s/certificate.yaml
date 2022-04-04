@@ -1,4 +1,4 @@
-apiVersion: certmanager.io/v1
+apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: beracats-tailgate-com-tls
