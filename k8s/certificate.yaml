@@ -11,10 +11,3 @@ spec:
   dnsNames:
     - bearcats-tailgate.com
     - www.bearcats-tailgate.com
-  acme:  
-    config:
-      - http01:
-          ingresClass:  ngnex
-        domains:  
-          - bearcats-tailgate.com
-          - www.bearcats-tailgate.com
