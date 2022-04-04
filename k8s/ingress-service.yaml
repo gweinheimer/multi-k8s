@@ -15,8 +15,8 @@ spec:
   tls: 
     - hosts:
         - bearcats-tailgate.com
-        - www.bearcats-tailgat.com
-      secretName: bearcats-tailgat-com
+        - www.bearcats-tailgate.com
+      secretName: bearcats-tailgate-com
   rules:
     - host: bearcats-tailgate.com  
       http:
