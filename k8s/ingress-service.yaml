@@ -8,10 +8,41 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: 'true'
     # ADD ANNOTATION
     nginx.ingress.kubernetes.io/rewrite-target: /$1
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
     # UPDATE ANNOTATION
 spec:
+  tls: 
+    - hosts:
+        - bearcats-tailgate.com
+        - www.bearcats-tailgat.com
+      secretName: bearcats-tailgat-com
   rules:
-    - http:
+    - host: bearcats-tailgate.com  
+      http:
+        paths:
+          - path: /?(.*)
+            # UPDATE PATH
+            pathType: Prefix
+            # ADD PATHTYPE
+            backend:
+              service:
+                # UPDATE SERVICE FIELDS
+                name: client-cluster-ip-service
+                port:
+                  number: 3000
+          - path: /api/?(.*)
+            # UPDATE PATH
+            pathType: Prefix
+            # ADD PATHTYPE
+            backend:
+              service:
+                # UPDATE SERVICE FIELDS
+                name: server-cluster-ip-service
+                port:
+                  number: 5000
+    - host: www.bearcats-tailgate.com  
+      http:
         paths:
           - path: /?(.*)
             # UPDATE PATH
