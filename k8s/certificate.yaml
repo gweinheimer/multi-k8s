@@ -3,18 +3,11 @@ kind: Certificate
 metadata:
   name: bearcats-tailgate-com-tls
 spec:
-  secretName: bearcats-tailgate-com  
-  issuerRef:  
+  secretName: bearcats-tailgate-com
+  issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer
-  commonName: bearcats-tailgate.com 
+  commonName:  bearcats-tailgate.com
   dnsNames:
-    - bearcats-tailgate.com
-    - www.bearcats-tailgate.com
-   acme:
-    config:
-      - http01:
-          ingressClass: nginx
-        domains:
-          - bearcats-tailgate.com
-          - www.bearcats-tailgate.com
+    -  bearcats-tailgate.com
+    - www. bearcats-tailgate.com    
